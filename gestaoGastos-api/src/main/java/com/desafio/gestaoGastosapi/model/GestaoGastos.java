@@ -16,16 +16,6 @@ public class GestaoGastos {
 	@Field
 	private Long codigoUsuario;
 	
-	public GestaoGastos() {
-		
-	}
-	public GestaoGastos(Long codigoUsuario, String descricao, double valor, LocalDateTime data) {
-		super();
-		this.codigoUsuario = codigoUsuario;
-		this.descricao = descricao;
-		this.valor = valor;
-		this.data = data;
-	}
 	@Field
 	private String descricao;
 	@Field

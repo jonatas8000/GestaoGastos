@@ -6,6 +6,7 @@ public class GestaoGastosDTO {
 
 	
 	
+	
 	private Long codigoUsuario;
 	
 	private String descricao;
