@@ -1,5 +1,6 @@
 package com.desafio.gestaoGastosapi.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,7 @@ public class GestaoGastosServiceImpl implements GestaoGastosService {
 	public GestaoGastosServiceImpl() {
 		jedis = new Jedis("localhost");
 	}
+	
 
 	@Override
 	public GestaoGastosDTO criar(GestaoGastosDTO gestaoGastosDTO) {
@@ -46,18 +48,35 @@ public class GestaoGastosServiceImpl implements GestaoGastosService {
 		return gestaoGastosMapper.toDto(gestaoGastos);
 		
 	}
+	
+
+	@Override
+	public GestaoGastosDTO alterar(GestaoGastosDTO gestaoGastosDTO) {
+		return gestaoGastosMapper.toDto(gestaoGastosRepository.save(gestaoGastosMapper.toEntity(gestaoGastosDTO)));
+	}
+
 
 	@Override
 	public List<GestaoGastosDTO> buscarPorCodigoUsuario(Long codigoUsuario) {	
 		return  this.carregarListGastos( jedis.keys(codigoUsuario+"*"),codigoUsuario);
 	}
 	
+	@Override
+	public List<GestaoGastosDTO> buscarPorData(Long codigoUsurario,LocalDate data) {
+		return gestaoGastosMapper.toDto(gestaoGastosRepository.findByCodigoUsuarioAndData(codigoUsurario, data));
+
+	}
+
+	
 	private void salvarRedis(GestaoGastos gestaoGastos) {
 	
+		jedis.hset(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(),"id", gestaoGastos.getId());
 	    jedis.hset(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(), "descricao", gestaoGastos.getDescricao());
 	    jedis.hset(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(), "valor", Double.toString(gestaoGastos.getValor()));
 	    jedis.hset(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(), "data", gestaoGastos.getData().toString());
-		   
+	    if(gestaoGastos.getCategoria()!=null)
+	    jedis.hset(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(),"categoria", gestaoGastos.getCategoria());
+	    
 	    jedis.expire(gestaoGastos.getCodigoUsuario()+gestaoGastos.getId(), 5);     
 	    
 	  
@@ -68,13 +87,17 @@ public class GestaoGastosServiceImpl implements GestaoGastosService {
 		List<GestaoGastosDTO> listGestaoGastosDTO = new ArrayList<>();
 		for(String chave : chaves) {
 			GestaoGastosDTO gestaoGastosDTO = new GestaoGastosDTO();
+			gestaoGastosDTO.setId(jedis.hget(chave, "id"));
 			gestaoGastosDTO.setCodigoUsuario(codigoUsuario);
 			gestaoGastosDTO.setDescricao(jedis.hget(chave, "descricao"));
 			gestaoGastosDTO.setValor(Double.parseDouble(jedis.hget(chave, "valor")));
 			gestaoGastosDTO.setData( LocalDateTime.parse(jedis.hget(chave, "data")));
+			gestaoGastosDTO.setCategoria(jedis.hget(chave, "categoria"));
+			
 			listGestaoGastosDTO.add(gestaoGastosDTO);
 		}
 		return listGestaoGastosDTO;
 	}
+
 
 }

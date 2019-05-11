@@ -2,21 +2,34 @@ package com.desafio.gestaoGastosapi.service.dto;
 
 import java.time.LocalDateTime;
 
+import javax.validation.constraints.NotNull;
+
 public class GestaoGastosDTO {
 
 	
 	
+	private String id;
 	
+	@NotNull
 	private Long codigoUsuario;
 	
+	@NotNull
 	private String descricao;
 	
+	@NotNull
 	private double valor;
 	
+	@NotNull
 	private LocalDateTime data;
 	
+	private String categoria;
 	
-	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public Long getCodigoUsuario() {
 		return codigoUsuario;
 	}
@@ -41,4 +54,11 @@ public class GestaoGastosDTO {
 	public void setData(LocalDateTime data) {
 		this.data = data;
 	}
+	public String getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
+	}
+	
 }

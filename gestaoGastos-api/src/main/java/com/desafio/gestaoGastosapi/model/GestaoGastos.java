@@ -20,9 +20,13 @@ public class GestaoGastos {
 	private String descricao;
 	@Field
 	private double valor;
+
 	@Field
+//	@DateTimeFormat(pattern="dd-MM-yyyy")
 	private LocalDateTime data;
 	
+	@Field
+	private String categoria;
 	
 	public String getId() {
 		return id;
@@ -53,6 +57,12 @@ public class GestaoGastos {
 	}
 	public void setData(LocalDateTime data) {
 		this.data = data;
+	}
+	public String getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(String categoria) {
+		this.categoria = categoria;
 	}
 	
 	
